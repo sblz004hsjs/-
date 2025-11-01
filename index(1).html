@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>快传图床官网</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Segoe UI", "Arial", "Microsoft YaHei", sans-serif;
+        }
+        html, body {
+            height: 100%;
+            overflow: hidden;
+            position: relative;
+        }
+        .fullscreen-bg {
+            width: 100%;
+            height: 100%;
+            background-image: url("https://i.imgs.ovh/2025/11/01/7IHAxF.jpeg");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            filter: brightness(0.9);
+        }
+        .menu-btn {
+            position: fixed;
+            top: 30px;
+            left: 30px;
+            width: 40px;
+            height: 40px;
+            background-color: transparent;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            cursor: pointer;
+            z-index: 100;
+            border: none;
+            outline: none;
+        }
+        .menu-line {
+            width: 22px;
+            height: 2px;
+            background-color: #ffffff;
+            border-radius: 1px;
+            transition: background-color 0.3s ease;
+        }
+        .menu-btn:hover .menu-line {
+            background-color: #f0f0f0;
+        }
+        .menu-popup {
+            position: fixed;
+            top: 80px;
+            left: 30px;
+            background-color: rgba(255,255,255,0.9);
+            border-radius: 8px;
+            box-shadow: none;
+            padding: 15px 0;
+            z-index: 90;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+        }
+        .menu-popup.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+        .menu-item {
+            padding: 12px 25px;
+            color: #2d3748;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .menu-item:hover {
+            background-color: rgba(0,0,0,0.05);
+        }
+        .version-panel {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(255,255,255,0.95);
+            backdrop-filter: blur(4px);
+            border-radius: 12px;
+            box-shadow: none;
+            padding: 40px 30px;
+            width: 100%;
+            max-width: 450px;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.4s ease;
+            z-index: 80;
+            text-align: center;
+        }
+        .version-panel.show {
+            opacity: 1;
+            visibility: visible;
+        }
+        .version-logo {
+            width: 80px;
+            height: 80px;
+            border-radius: 16px;
+            object-fit: contain;
+            margin: 0 auto 20px;
+            background-color: #ffffff;
+            padding: 10px;
+        }
+        .panel-title {
+            font-size: 22px;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 15px;
+        }
+        .panel-desc {
+            font-size: 14px;
+            color: #718096;
+            margin-bottom: 30px;
+            line-height: 1.6;
+            padding: 0 10px;
+        }
+        .download-btn {
+            display: block;
+            width: 100%;
+            padding: 14px 0;
+            background-color: #2563eb;
+            color: #ffffff;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 500;
+            transition: background-color 0.3s ease;
+            border: none;
+        }
+        .download-btn:hover {
+            background-color: #1d4ed8;
+        }
+        .close-panel {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background-color: transparent;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #4a5568;
+            font-size: 16px;
+            transition: color 0.3s ease;
+        }
+        .close-panel:hover {
+            color: #e53e3e;
+        }
+        @media (max-width: 500px) {
+            .version-panel {
+                padding: 30px 20px;
+                margin: 0 15px;
+            }
+            .menu-btn {
+                top: 20px;
+                left: 20px;
+            }
+            .menu-popup {
+                top: 70px;
+                left: 20px;
+            }
+            .version-logo {
+                width: 70px;
+                height: 70px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="fullscreen-bg"></div>
+
+    <button class="menu-btn" id="menuBtn">
+        <div class="menu-line"></div>
+        <div class="menu-line"></div>
+        <div class="menu-line"></div>
+    </button>
+
+    <div class="menu-popup" id="menuPopup">
+        <div class="menu-item" id="showGlobal">Global版</div>
+        <div class="menu-item" id="showDomestic">国内版</div>
+        <div class="menu-item" id="closeMenu">关闭菜单</div>
+    </div>
+
+    <div class="version-panel" id="globalPanel">
+        <button class="close-panel" id="closeGlobal">&times;</button>
+        <img src="https://s3.bmp.ovh/imgs/2025/10/19/52f7bbd2c04c2707.png" alt="快传图床Global Logo" class="version-logo">
+        <div class="panel-title">快传图床 Global 版</div>
+        <div class="panel-desc">海外专用，国内用户使用需vpn代理</div>
+        <a href="https://d2.qyshare.store/s/TBVWTxUNFQ8OKFCVA50gYPUlUGGlYKFCVA50VKFCVA50IaKFCVA501RTDhpWUwcKFCVA50Gg4OKFCVA50gVRKFCVA50w8OKFCVA50lYGDxUbFVhERH9YREMVDRVYREQZRk5CWRlYRVKFCVA50VGxVYRER8Uk4VDRVCR1tYVlMYBQcFKFCVA50hgGBxgGDhgGKFCVA50gUDBVMDKFCVA50xoDKFCVA50gcHGgMOKFCVA50FMaDw4CBRpRUlMDKFCVA50wcOVKFCVA50EFKFCVA50wcZVV5ZFRsVVlQVDRUBKFCVA50lZUBg4EVBpVKFCVA50w8HGgMBBFUaDwMEBBpUBKFCVA509TKFCVA501EBBQ8HBw8VGxVZVlpSFQ0V0oic04uX0qyJ0o29cFtYVVZbGVZHXBUbFVRYWUNSWUNjTkdSFQ0VVkdHW15UVkNeWFkYQVlTGVZZU0VYXlMZR1ZUXFZQUhpWRVRfXkFSFRsVVlMVDRVRVQJTKFCVA50lQHBxoKFCVA50Dw4GGgNSVFEaVVQHDhpSVKFCVA50UHUVNWVQMHVlMVSg==" target="_blank" class="download-btn">立即下载 Global 版</a>
+    </div>
+
+    <div class="version-panel" id="domesticPanel">
+        <button class="close-panel" id="closeDomestic">&times;</button>
+        <img src="https://s3.bmp.ovh/imgs/2025/10/31/0f468611acd12427.png" alt="快传图床国内版 Logo" class="version-logo">
+        <div class="panel-title">快传图床（国内版）</div>
+        <div class="panel-desc">针对中国大陆网络优化，上传速度更快</div>
+        <a href="https://d6.qyshare.store/s/TBVWTxUNFVYEBQFRVgZRGgEFKFCVA50FUaKFCVA501IEBxpVVQKFCVA50OGgKFCVA50HUwEDBlMKFCVA50KFCVA50gMGDxUbFVhERH9YREMVDRVYREQZRk5CWRlYRVKFCVA50VGxVYRER8Uk4VDRVCR1tYVlMYBQcFKFCVA50hgGBhgHBhgKFCVA50KFCVA50FVWDwQGKFCVA50hpRUwFUGgMPVFEaD1JVVhpTBgQOBVUFBlQFKFCVA50QMZVV5ZFRsVVlQVDRVWBFQKFCVA50KFCVA501JVURpRKFCVA50lMDGgNTUwEaVQIFDxpUBw5RKFCVA50QUPVKFCVA50BWDgIVGxVZVlpSFQ0V0oic04uX0qyJ0o29BhkHGVZHXBUbFVRYWUNSWUNjTkdSFQ0VVkdHW15UVkNeWFkYQVlTGVZZU0VYXlMZR1ZUXFZQUhpWRVRfXkFSFRsVVlMVDRVWKFCVA50lIKFCVA50UVIPVhoHU1IFGgMOKFCVA50QIaDwZWVhoBKFCVA501NRKFCVA50KFCVA50MCU1YFDwIVSg==" target="_blank" class="download-btn">立即下载 国内版</a>
+    </div>
+
+    <script>
+        const menuBtn = document.getElementById('menuBtn');
+        const menuPopup = document.getElementById('menuPopup');
+        const showGlobal = document.getElementById('showGlobal');
+        const showDomestic = document.getElementById('showDomestic');
+        const closeMenu = document.getElementById('closeMenu');
+        const globalPanel = document.getElementById('globalPanel');
+        const domesticPanel = document.getElementById('domesticPanel');
+        const closeGlobal = document.getElementById('closeGlobal');
+        const closeDomestic = document.getElementById('closeDomestic');
+
+        menuBtn.addEventListener('click', () => {
+            menuPopup.classList.toggle('show');
+            globalPanel.classList.remove('show');
+            domesticPanel.classList.remove('show');
+        });
+
+        showGlobal.addEventListener('click', () => {
+            menuPopup.classList.remove('show');
+            globalPanel.classList.add('show');
+            domesticPanel.classList.remove('show');
+        });
+
+        showDomestic.addEventListener('click', () => {
+            menuPopup.classList.remove('show');
+            domesticPanel.classList.add('show');
+            globalPanel.classList.remove('show');
+        });
+
+        closeMenu.addEventListener('click', () => menuPopup.classList.remove('show'));
+        closeGlobal.addEventListener('click', () => globalPanel.classList.remove('show'));
+        closeDomestic.addEventListener('click', () => domesticPanel.classList.remove('show'));
+
+        document.addEventListener('click', (e) => {
+            const noClose = e.target.closest('.menu-btn') || e.target.closest('.menu-popup') || e.target.closest('.version-panel');
+            if (!noClose) {
+                menuPopup.classList.remove('show');
+                globalPanel.classList.remove('show');
+                domesticPanel.classList.remove('show');
+            }
+        });
+    </script>
+</body>
+</html>
